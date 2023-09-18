@@ -1,4 +1,11 @@
+require('dotenv').config();
+const fs = require('fs');
+const path = require('path');
 const nodemailer = require('nodemailer');
+
+const EMAIL = process.env.EMAIL;
+const PASSWORD = process.env.PASSWORD;
+//  here signup controller has testing for sending email
 const signup = async (request , response)=>{
     // creating test account on nodemailer 
     let testAccount = await nodemailer.createTestAccount();
@@ -40,7 +47,47 @@ const signup = async (request , response)=>{
     console.log('in the signup route');
 };
 
+// here getbill  controller has gmail sending system
+
+const getbill = (request , response)=>{
+
+    const {userEmail} = request.body;
+
+    let config = {
+        service: 'gmail',
+        auth: {
+            user: EMAIL,
+            pass: PASSWORD,
+
+        }
+    };
+
+    let transporter = nodemailer.createTransport(config);
+
+    const emailHTML = fs.readFileSync(path.join(__dirname, 'order_confirmation.html'), 'utf-8');
+
+    let mailmessage = {
+        from: EMAIL,
+        to: userEmail,
+        subject:"place order",
+        html: emailHTML,
+
+    };
+
+    transporter.sendMail(mailmessage).then(()=>{
+        return response.status(201).json({msg: "you should receive an email"});
+    }).catch(err =>{
+        return response.status(500).json({
+            err
+        });
+    });
+
+    console.log("in getbill....");
+
+}
+
 module.exports = {
     signup,
+    getbill,
 
 }
