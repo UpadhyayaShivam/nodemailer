@@ -9,11 +9,11 @@ const signup = async (request , response)=>{
         port:587,
         secure:false,
         auth:{
-            // user:testAccount.user,
-            // pass: testAccount.pass,
+            user:testAccount.user,
+            pass: testAccount.pass,
 
-            user: 'angeline.mcglynn32@ethereal.email',
-            pass: 'kh8dfYMgvnA4eEcrCn'
+            // user: 'angeline.mcglynn32@ethereal.email',
+            // pass: 'kh8dfYMgvnA4eEcrCn'
         },
     });
 
@@ -29,7 +29,7 @@ const signup = async (request , response)=>{
         return response.status(201).json({
             msg:"mail is sent successfully ....",
             info : info.messageId,
-            preview: nodemailer.getTestMessageUrl,
+            preview : nodemailer.getTestMessageUrl(info),
     });
     }).catch(err=>{
         return response.status(500).json({err});
